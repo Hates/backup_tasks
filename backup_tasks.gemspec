@@ -4,7 +4,7 @@ require "backup_tasks/version"
 
 Gem::Specification.new do |s|
   s.name        = "backup_tasks"
-  s.version     = 0.1.0
+  s.version     = "0.1.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Richard Hart"]
   s.email       = ["richard@ur-ban.com"]
