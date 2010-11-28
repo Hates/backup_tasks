@@ -6,7 +6,7 @@ require 'active_record'
 namespace :s3 do
 
   desc "Backup the database to S3"
-  task :db  do
+  task :db_backup do
     archive = "#{'db'}-#{Rails.env}-#{Time.now.to_s(:number)}"
     database, user, password = retrieve_db_info
     cmd = "mysqldump --opt --skip-add-locks -u#{user} "
@@ -31,20 +31,20 @@ end
 def retrieve_db_info
   # read the remote database file....
   # there must be a better way to do this...
-  result = File.read "#{RAILS_ROOT}/config/database.yml"
+  result = File.read Rails.root.join("config", "database.yml")
   result.strip!
   config_file = YAML::load(ERB.new(result).result)
-  username = config_file[RAILS_ENV]['username'] || "root"
-  password = config_file[RAILS_ENV]['password']
+  username = config_file[Rails.env]['username'] || "root"
+  password = config_file[Rails.env]['password']
   return [
-    config_file[RAILS_ENV]['database'],
+    config_file[Rails.env]['database'],
     username,
     password
   ]
 end
 
 def send_to_s3(tmp_file)
-  @s3_configs ||= YAML::load(ERB.new(IO.read("#{RAILS_ROOT}/config/s3.yml")).result)
+  @s3_configs ||= YAML::load(ERB.new(IO.read(Rails.root.join("config" , "s3.yml")).result))
   AWS::S3::Base.establish_connection!(:access_key_id => @s3_configs[Rails.env]['access_key_id'], :secret_access_key => @s3_configs[Rails.env]['secret_access_key'])
   AWS::S3::Bucket.create("db-#{Rails.env}")
 

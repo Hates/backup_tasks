@@ -2,8 +2,6 @@
 
 Tasks for backing up a database to S3.
 
-* This currently doesn't work as a gem! I need to move it to being a plugin. So copy the rake file into your lib/tasks directory to use.
-
 == Note on Patches/Pull Requests
  
 * Fork the project.
